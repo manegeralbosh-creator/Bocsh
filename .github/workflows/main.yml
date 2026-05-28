@@ -9,13 +9,18 @@ jobs:
       image: kivy/buildozer:latest
     steps:
       - uses: actions/checkout@v4
+      
+      # هذا الأمر سيعرض لنا أسماء الملفات التي يراها النظام
+      - name: List files
+        run: ls -R
+        
       - name: Build
         env:
           BUILDOZER_ALLOW_ROOT: 1
         run: |
-          ls -F
           pip install --upgrade buildozer cython
           yes | buildozer android debug
+          
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
