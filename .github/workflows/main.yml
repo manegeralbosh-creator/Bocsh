@@ -13,9 +13,9 @@ jobs:
         env:
           BUILDOZER_ALLOW_ROOT: 1
         run: |
+          ls -F
           pip install --upgrade buildozer cython
-          # This command automatically answers 'y' to all prompts
-          echo "y" | buildozer android debug
+          yes | buildozer android debug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
