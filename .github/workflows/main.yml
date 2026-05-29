@@ -8,10 +8,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install System Dependencies
+      - name: Setup Environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev
           
       - name: Install Buildozer
         run: |
@@ -21,11 +21,10 @@ jobs:
         env:
           BUILDOZER_ALLOW_ROOT: 1
         run: |
-          # هذه الخطوة تجبر buildozer على تحضير بيئة العمل بشكل صحيح
+          # هذه الخطوة هي الأهم: إجبار النظام على تحميل الأدوات في مجلد العمل
+          mkdir -p .buildozer
           buildozer android debug || true
-          
-          # نقوم بتنفيذ البناء مع طلب تفاصيل كاملة لرؤية الخطأ بدقة إذا حدث
-          buildozer --verbose android debug
+          buildozer android debug
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
