@@ -1,42 +1,12 @@
-name: Build APK
-
-on: [push]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev
-          pip3 install --upgrade buildozer cython
-          
-      - name: Fix SDK and Accept Licenses
-        run: |
-          mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
-          unzip cmdline-tools.zip -d ~/.buildozer/android/platform/android-sdk/cmdline-tools
-          mv ~/.buildozer/android/platform/android-sdk/cmdline-tools/cmdline-tools ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
-          
-          # الموافقة التلقائية على جميع التراخيص
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk --licenses
-          
-          # تثبيت الأدوات المطلوبة
-          ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.1"
-          
-      - name: Build APK
-        env:
-          BUILDOZER_ALLOW_ROOT: 1
-        run: |
-          buildozer --verbose android debug
-          
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: my-app-apk
-          path: bin/*.apk
+ name: Install Android SDK Command-line Tools
+  run: |
+    sudo apt-get install -y cmdline-tools
+    mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
+    # تحميل نسخة متوافقة من أدوات جوجل مباشرة
+    wget https://google.com
+    unzip commandlinetools-linux-9477386_latest.zip
+    mv cmdline-tools/* ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/
+    
+- name: Accept Android SDK Licenses
+  run: |
+    yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
