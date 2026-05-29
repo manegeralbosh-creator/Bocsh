@@ -8,18 +8,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev
+          
+      - name: Install Buildozer
+        run: |
           pip3 install --upgrade buildozer cython
           
-      - name: Build with Buildozer
+      - name: Build APK
         env:
           BUILDOZER_ALLOW_ROOT: 1
         run: |
-          # نستخدم --verbose و log_level 2 لكشف الخطأ المخفي
-          buildozer --verbose --debug android debug
+          # هذه الخطوة تجبر buildozer على تحضير بيئة العمل بشكل صحيح
+          buildozer android debug || true
+          
+          # نقوم بتنفيذ البناء مع طلب تفاصيل كاملة لرؤية الخطأ بدقة إذا حدث
+          buildozer --verbose android debug
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
