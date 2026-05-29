@@ -9,3 +9,4 @@ requirements = python3,kivy
 android.api = 33
 android.minapi = 21
 android.archs = armeabi-v7a
+android.sdk_path = /home/runner/.buildozer/android/platform/android-sdk
