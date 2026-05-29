@@ -1,4 +1,5 @@
- name: Install Android SDK Command-line Tools
+ name:
+Install Android SDK Command-line Tools
   run: |
     sudo apt-get install -y cmdline-tools
     mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
