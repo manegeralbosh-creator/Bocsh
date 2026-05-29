@@ -14,7 +14,8 @@ jobs:
           BUILDOZER_ALLOW_ROOT: 1
         run: |
           apt-get update
-          apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          # قمنا بإزالة libtinfo5 وإضافة libtinfo-dev كبديل حديث
+          apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev
           pip install --upgrade buildozer cython
           buildozer --verbose android debug || true
           printf "y\n" | buildozer android debug
