@@ -14,21 +14,20 @@ jobs:
           sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev
           pip3 install --upgrade buildozer cython
           
-      - name: Fix SDK Path
+      - name: Fix SDK and Accept Licenses
         run: |
-          # إنشاء المجلدات المطلوبة
           mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
-          
-          # تحميل أداة commandlinetools الحديثة من جوجل
           wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
           unzip cmdline-tools.zip -d ~/.buildozer/android/platform/android-sdk/cmdline-tools
-          
-          # إعادة تسمية المجلد ليتوافق مع ما يبحث عنه النظام
           mv ~/.buildozer/android/platform/android-sdk/cmdline-tools/cmdline-tools ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
           
-          # إنشاء رابط رمزي (Symbolic Link) لخداع النظام القديم
-          mkdir -p ~/.buildozer/android/platform/android-sdk/tools/bin
-          ln -s ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager ~/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
+          # الموافقة التلقائية على جميع التراخيص
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk --licenses
+          
+          # تثبيت الأدوات المطلوبة
+          ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.1"
           
       - name: Build APK
         env:
