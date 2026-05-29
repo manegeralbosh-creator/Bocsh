@@ -8,22 +8,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Prepare System
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev
+          sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev
           
-      - name: Install Buildozer
+      - name: Setup Build Environment
         run: |
           pip3 install --upgrade buildozer cython
+          # إنشاء المجلدات الضرورية يدوياً
+          mkdir -p ~/.buildozer/android/platform/android-sdk
           
       - name: Build APK
         env:
           BUILDOZER_ALLOW_ROOT: 1
+          # توجيه البناء للمسار الذي أنشأناه
+          ANDROIDSDK: /home/runner/.buildozer/android/platform/android-sdk
         run: |
-          # هذه الخطوات تضمن تحميل الـ SDK و الـ NDK بشكل منفصل عن عملية البناء
-          buildozer android update
-          buildozer android debug
+          buildozer --verbose android debug
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
